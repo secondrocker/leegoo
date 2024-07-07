@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package api.kvstore.v1;
+import "google/api/annotations.proto";
+
+option go_package = "leegoo/api/kvstore/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.kvstore.v1";
+option java_outer_classname = "Kvstorev1";
+
+service Kv {
+	rpc Set (KvRequest) returns (KvReply) {
+    option (google.api.http) = {
+      post: "/kvstore",
+      body: "*"
+    };
+  };
+	rpc Get (KvRequest) returns (KvReply) {
+    option (google.api.http) = {
+      get: "/kvstore/{key}"
+    };
+  };
+	rpc Del (KvRequest) returns (KvReply) {
+    option (google.api.http) = {
+      delete: "/kvstore/{key}"
+    };
+  };
+}
+
+message KvRequest {
+  string key = 1;
+  string data = 2;
+}
+message KvReply {
+  int32 code = 1;
+  string data = 2;
+}
