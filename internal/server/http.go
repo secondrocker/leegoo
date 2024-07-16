@@ -3,19 +3,23 @@ package server
 import (
 	v1 "leegoo/api/helloworld/v1"
 	ks "leegoo/api/kvstore/v1"
+	oss_n "leegoo/api/oss/v1"
+
 	"leegoo/internal/conf"
 	"leegoo/internal/service"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/validate"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *conf.Server, kv *service.KvService, greeter *service.GreeterService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, kv *service.KvService, greeter *service.GreeterService, oss *service.OssService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+			validate.Validator(),
 		),
 	}
 	if c.Http.Network != "" {
@@ -30,5 +34,6 @@ func NewHTTPServer(c *conf.Server, kv *service.KvService, greeter *service.Greet
 	srv := http.NewServer(opts...)
 	v1.RegisterGreeterHTTPServer(srv, greeter)
 	ks.RegisterKvHTTPServer(srv, kv)
+	oss_n.RegisterOssHTTPServer(srv, oss)
 	return srv
 }

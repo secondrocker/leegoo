@@ -9,16 +9,17 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewOssClient, NewOssBuckets, NewData, NewGreeterRepo)
 
 // Data .
 type Data struct {
 	// TODO wrapped database client
-	LevelDb *leveldb.DB
+	LevelDb   *leveldb.DB
+	OssPocket *OssBuckets
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
+func NewData(c *conf.Data, ossPocket *OssBuckets, logger log.Logger) (*Data, func(), error) {
 	//leveldb
 	db, err := leveldb.OpenFile(c.Leveldb.GetPath(), nil)
 	if err != nil {
@@ -28,5 +29,5 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 		log.NewHelper(logger).Info("closing the data resources")
 		db.Close()
 	}
-	return &Data{LevelDb: db}, cleanup, nil
+	return &Data{LevelDb: db, OssPocket: ossPocket}, cleanup, nil
 }

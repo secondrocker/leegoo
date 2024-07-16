@@ -7,4 +7,4 @@ import (
 )
 
 // ProviderSet is service providers.
-var ProviderSet = wire.NewSet(data.NewKvData, NewKvService, NewGreeterService)
+var ProviderSet = wire.NewSet(data.NewKvData, NewKvService, NewGreeterService, data.NewOssData, NewOssService)

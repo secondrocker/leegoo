@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package api.oss.v1;
+import "google/api/annotations.proto";
+
+option go_package = "leegoo/api/oss/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.oss.v1";
+option java_outer_classname = "Ossv1";
+
+
+service Oss {
+  rpc GetUrl (OssRequest) returns (OssReply) {
+    option (google.api.http) = {
+      get: "/oss/get_url"
+    };
+  };
+  rpc Delete (OssRequest) returns (OssReply) {
+    option (google.api.http) = {
+      delete: "/oss/delete"
+    };
+  };
+  rpc Restore (OssRequest) returns (OssReply) {
+    option (google.api.http) = {
+      post: "/oss/restore"
+    };
+  };
+}
+message OssRequest {
+  string bucket = 1;
+  string path = 2;
+}
+
+message OssReply {
+  int32 code = 1;
+  string url = 2;
+}

@@ -24,7 +24,12 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+	client, err := data.NewOssClient(confData)
+	if err != nil {
+		return nil, nil, err
+	}
+	ossBuckets := data.NewOssBuckets(client)
+	dataData, cleanup, err := data.NewData(confData, ossBuckets, logger)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -33,8 +38,10 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	greeterRepo := data.NewGreeterRepo(dataData, logger)
 	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
 	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, kvService, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, kvService, greeterService, logger)
+	ossData := data.NewOssData(dataData)
+	ossService := service.NewOssService(ossData)
+	grpcServer := server.NewGRPCServer(confServer, kvService, greeterService, ossService, logger)
+	httpServer := server.NewHTTPServer(confServer, kvService, greeterService, ossService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()

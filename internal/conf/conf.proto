@@ -39,7 +39,14 @@ message Data {
   message Leveldb {
     string path = 1;
   }
+
+  message Oss {
+    string endpoint = 1;
+    string access_key_id = 2;
+    string access_key_secret = 3;
+  }
   Database database = 1;
   Redis redis = 2;
   Leveldb leveldb = 3;
+  Oss oss = 4;
 }

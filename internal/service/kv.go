@@ -22,7 +22,7 @@ func (s *KvService) Get(ctx context.Context, req *pb.KvRequest) (*pb.KvReply, er
 	if err != nil {
 		code = 999
 	}
-	return &pb.KvReply{Code: code, Data: data}, err
+	return &pb.KvReply{Code: code, Data: data}, nil
 }
 func (s *KvService) Del(ctx context.Context, req *pb.KvRequest) (*pb.KvReply, error) {
 	err := s.kvData.DelKv(req.GetKey())

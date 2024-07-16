@@ -37,3 +37,5 @@ bin/
 .idea/
 *.swp
 cmd/leegoo/out_data/
+configs/config.yaml
+out_data/

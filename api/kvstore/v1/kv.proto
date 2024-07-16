@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package api.kvstore.v1;
 import "google/api/annotations.proto";
+import "validate/validate.proto";
 
 option go_package = "leegoo/api/kvstore/v1;v1";
 option java_multiple_files = true;
@@ -28,7 +29,7 @@ service Kv {
 }
 
 message KvRequest {
-  string key = 1;
+  string key = 1 [(validate.rules).string = {min_len: 1, max_len: 10}];
   string data = 2;
 }
 message KvReply {
